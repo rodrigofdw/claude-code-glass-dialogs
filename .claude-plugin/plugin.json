@@ -1,0 +1,11 @@
+{
+  "name": "glass-dialogs",
+  "version": "1.0.0",
+  "description": "Acrylic glass overlay dialogs for Claude Code — permission prompts, question UIs, and response notifications as native Windows popups with blur-behind effects",
+  "author": {
+    "name": "rodrigofdw"
+  },
+  "platforms": ["win32"],
+  "keywords": ["notifications", "dialogs", "windows", "wpf", "acrylic", "hooks"],
+  "homepage": "https://github.com/rodrigofdw/claude-code-glass-dialogs"
+}
