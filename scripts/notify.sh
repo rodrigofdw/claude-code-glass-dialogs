@@ -5,7 +5,7 @@
 INPUT=$(cat)
 
 case "$INPUT" in
-  *'"PermissionRequest"'*|*'"Notification"'*|*'"Stop"'*|*'"StopFailure"'*|*'"PostToolUseFailure"'*|*'"AskUserQuestion"'*) ;;
+  *'"PermissionRequest"'*|*'"Notification"'*|*'"Stop"'*|*'"StopFailure"'*|*'"PostToolUseFailure"'*|*'"AskUserQuestion"'*|*'"UserPromptSubmit"'*) ;;
   *) exit 0 ;;
 esac
 
@@ -50,6 +50,7 @@ if [ -f "$CONFIG_FILE" ]; then
     console.log('CFG_QUEST_TIMEOUT=' + (c.questions?.timeoutSeconds || 120));
     console.log('CFG_MSG_ENABLED=' + (c.messages?.enabled !== false ? '1' : '0'));
     console.log('CFG_MSG_TIMEOUT=' + (c.messages?.timeoutSeconds || 30));
+    console.log('CFG_OVERLAY_ENABLED=' + (c.workingOverlay?.enabled !== false ? '1' : '0'));
     console.log('CFG_SOUND=' + (c.sound !== false ? '1' : '0'));
   " 2>/dev/null)" || true
 fi
@@ -58,7 +59,10 @@ fi
 : "${CFG_PERM_ENABLED:=1}" "${CFG_PERM_TIMEOUT:=45}"
 : "${CFG_QUEST_ENABLED:=1}" "${CFG_QUEST_TIMEOUT:=120}"
 : "${CFG_MSG_ENABLED:=1}" "${CFG_MSG_TIMEOUT:=30}"
-: "${CFG_SOUND:=1}"
+: "${CFG_OVERLAY_ENABLED:=1}" "${CFG_SOUND:=1}"
+
+# Sentinel file for working overlay (shared across hook invocations)
+SENTINEL_FILE="${CONFIG_DIR}/working.sentinel"
 
 # ── Parse hook event ────────────────────────────────────────────────
 PARSED=$(echo "$INPUT" | node -e "
@@ -68,6 +72,30 @@ PARSED=$(echo "$INPUT" | node -e "
   console.log('TRANSCRIPT=' + JSON.stringify(d.transcript_path || ''));
 " 2>/dev/null) || true
 eval "$PARSED"
+
+# ── UserPromptSubmit: show working overlay ──────────────────────────
+if [ "$HOOK_EVENT" = "UserPromptSubmit" ]; then
+  [ "$CFG_OVERLAY_ENABLED" = "0" ] && exit 0
+
+  # Create sentinel file — overlay polls for it, Stop deletes it
+  mkdir -p "$(dirname "$SENTINEL_FILE")"
+  touch "$SENTINEL_FILE"
+
+  SENTINEL_WIN=$(to_winpath "$SENTINEL_FILE")
+
+  # Launch overlay in background (fire-and-forget)
+  "$PWSH" -NoProfile -File "${SCRIPTS_WIN}\\working-overlay.ps1" \
+    -SentinelFile "$SENTINEL_WIN" \
+    -IconPath "$ICON" -Source "$SOURCE" &>/dev/null &
+
+  exit 0
+fi
+
+# ── Stop / StopFailure: dismiss working overlay ─────────────────────
+if [ "$HOOK_EVENT" = "Stop" ] || [ "$HOOK_EVENT" = "StopFailure" ]; then
+  # Remove sentinel to signal the overlay to close
+  rm -f "$SENTINEL_FILE" 2>/dev/null
+fi
 
 # ── Permission Request ──────────────────────────────────────────────
 if [ "$HOOK_EVENT" = "PermissionRequest" ]; then

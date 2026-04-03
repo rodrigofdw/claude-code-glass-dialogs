@@ -11,5 +11,8 @@
     "enabled": true,
     "timeoutSeconds": 30
   },
+  "workingOverlay": {
+    "enabled": true
+  },
   "sound": true
 }

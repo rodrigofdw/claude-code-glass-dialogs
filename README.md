@@ -14,6 +14,7 @@ Native Windows acrylic glass overlay dialogs for Claude Code — replaces termin
 - **Acrylic blur-behind** — Native Windows 11 DWM compositor effects with rounded corners
 - **Fade in/out transitions** — Smooth opacity animations
 - **Environment badges** — Visual indicator showing WIN or WSL origin
+- **Working overlay** — Persistent "Claude is working" indicator with sweeping progress bar and elapsed timer
 - **Auto-timeout** — Dialogs auto-dismiss and fall back to the terminal prompt
 
 ## Requirements
@@ -105,6 +106,7 @@ On first run, a `config.json` is created automatically. Edit it to customize beh
 | `questions.timeoutSeconds` | `120` | Auto-dismiss question dialog after this many seconds. |
 | `messages.enabled` | `true` | Show glass popups for response previews, errors, and status alerts. |
 | `messages.timeoutSeconds` | `30` | Auto-dismiss message dialog after this many seconds. |
+| `workingOverlay.enabled` | `true` | Show a persistent overlay while Claude is processing. |
 | `sound` | `true` | Play the Windows notification sound for alerts that request attention. |
 
 Changes take effect immediately — no restart needed.
