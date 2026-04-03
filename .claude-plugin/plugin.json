@@ -1,6 +1,6 @@
 {
   "name": "glass-dialogs",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Acrylic glass overlay dialogs for Claude Code — permission prompts, question UIs, and response notifications as native Windows popups with blur-behind effects",
   "author": {
     "name": "rodrigofdw"

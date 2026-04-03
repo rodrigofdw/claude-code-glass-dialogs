@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "enabled": true,
+    "timeoutSeconds": 45
+  },
+  "questions": {
+    "enabled": true,
+    "timeoutSeconds": 120
+  },
+  "messages": {
+    "enabled": true,
+    "timeoutSeconds": 30
+  },
+  "sound": true
+}

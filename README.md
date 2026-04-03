@@ -72,6 +72,43 @@ For manual installation on WSL2, use the `/mnt/c/` path to the cloned repo in yo
 
 Dialogs display an orange **WSL** badge when triggered from WSL2 and a blue **WIN** badge from Windows.
 
+## Configuration
+
+On first run, a `config.json` is created automatically. Edit it to customize behavior:
+
+- **Plugin install:** `~/.claude/plugins/data/glass-dialogs/config.json`
+- **Manual install:** `~/.config/glass-dialogs/config.json`
+
+```json
+{
+  "permissions": {
+    "enabled": true,
+    "timeoutSeconds": 45
+  },
+  "questions": {
+    "enabled": true,
+    "timeoutSeconds": 120
+  },
+  "messages": {
+    "enabled": true,
+    "timeoutSeconds": 30
+  },
+  "sound": true
+}
+```
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `permissions.enabled` | `true` | Show glass dialog for permission prompts. When `false`, falls through to the terminal prompt. |
+| `permissions.timeoutSeconds` | `45` | Auto-dismiss permission dialog after this many seconds. |
+| `questions.enabled` | `true` | Show glass dialog for AskUserQuestion prompts. |
+| `questions.timeoutSeconds` | `120` | Auto-dismiss question dialog after this many seconds. |
+| `messages.enabled` | `true` | Show glass popups for response previews, errors, and status alerts. |
+| `messages.timeoutSeconds` | `30` | Auto-dismiss message dialog after this many seconds. |
+| `sound` | `true` | Play the Windows notification sound for alerts that request attention. |
+
+Changes take effect immediately — no restart needed.
+
 ## Keyboard Shortcuts
 
 ### Permission Dialog

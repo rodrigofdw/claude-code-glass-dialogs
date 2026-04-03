@@ -2,7 +2,8 @@ param(
   [Parameter(Mandatory)]
   [string]$JsonFile,
   [string]$IconPath = "",
-  [string]$Source = ""
+  [string]$Source = "",
+  [int]$TimeoutSeconds = 45
 )
 
 . "$PSScriptRoot\dialog-common.ps1"
@@ -147,7 +148,7 @@ $window.Tag = "ask"
 
 $window.FindName("ToolNameText").Text = $toolName
 $window.FindName("DetailText").Text = $detail
-$window.FindName("CountdownText").Text = "45s"
+$window.FindName("CountdownText").Text = "${TimeoutSeconds}s"
 $icon = New-AppIcon $IconPath
 if ($icon) { $window.FindName("AppIcon").Source = $icon }
 Add-SourceBadge $window $Source
@@ -187,7 +188,7 @@ $window.Add_KeyDown({
   }
 })
 
-$script:countdown = 45
+$script:countdown = $TimeoutSeconds
 $timer = New-Object System.Windows.Threading.DispatcherTimer
 $timer.Interval = [System.TimeSpan]::FromSeconds(1)
 $timer.Add_Tick({

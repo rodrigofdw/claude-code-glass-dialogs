@@ -2,7 +2,8 @@ param(
   [Parameter(Mandatory)]
   [string]$JsonFile,
   [string]$IconPath = "",
-  [string]$Source = ""
+  [string]$Source = "",
+  [int]$TimeoutSeconds = 120
 )
 
 . "$PSScriptRoot\dialog-common.ps1"
@@ -211,7 +212,7 @@ function Move-Focus([int]$delta)
 $window = [System.Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $xaml))
 $window.Tag = "::SKIP::"
 $questionsPanel = $window.FindName("QuestionsPanel")
-$window.FindName("CountdownText").Text = "120s"
+$window.FindName("CountdownText").Text = "${TimeoutSeconds}s"
 
 $icon = New-AppIcon $IconPath
 if ($icon) { $window.FindName("AppIcon").Source = $icon }
@@ -437,7 +438,7 @@ $window.Add_PreviewKeyDown({
   }
 })
 
-$script:countdown = 120
+$script:countdown = $TimeoutSeconds
 $timer = New-Object System.Windows.Threading.DispatcherTimer
 $timer.Interval = [System.TimeSpan]::FromSeconds(1)
 $timer.Add_Tick({
